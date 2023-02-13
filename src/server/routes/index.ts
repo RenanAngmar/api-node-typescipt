@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { StatusCodes } from 'http-status-codes' // lib externa para status
+import {CidadesController} from './../controllers'
 
 const router = Router();
 
@@ -38,5 +39,8 @@ router.post('/teste3', (req, res) => {
   
   return res.json(req.query); // Aqui é a resposta para o front
 });
+
+// Inicio do post de cidades
+router.post('/cidades', CidadesController.create)
 
 export { router };

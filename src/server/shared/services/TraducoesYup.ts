@@ -1,0 +1,1 @@
+import {setLocale} from 'yup'
