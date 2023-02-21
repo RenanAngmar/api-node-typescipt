@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import { StatusCodes } from "http-status-codes";
+import { Request, RequestHandler, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
 import * as yup from 'yup';
 
 interface ICidade {
@@ -12,32 +12,39 @@ interface ICidade {
 // Schema para validação da entidade
 const bodyValidation: yup.Schema<ICidade> = yup.object().shape({
   id: yup.string(),
-  nome: yup.string().required().min(3, " Nome com mínimo de 3 caracteres").required("Campo nome é obrigatório"),
-  quantidade: yup.number().required("Campo Quantidade é obrigatória"),
-  ativa: yup.boolean().typeError("Campo deve ser do tipo boolean").required("Campo ativo é obrigatório")
-})
+  nome: yup.string().required().min(3, ' Nome com mínimo de 3 caracteres').required('Campo nome é obrigatório'),
+  quantidade: yup.number().required('Campo Quantidade é obrigatória'),
+  ativa: yup.boolean().typeError('Campo deve ser do tipo boolean').required('Campo ativo é obrigatório'),
+});
 
-export const create = async (req: Request<{},{}, ICidade>, res: Response) => {
 
-  // const data = req.body;
-  // console.log("Dados da Requisição: ", data);
 
-  let validatedData: ICidade | undefined = undefined
+// export const createBodyValidator = async (req: Request<{}, {}, ICidade>, res: Response) => {
+export const createBodyValidator: RequestHandler = async (req, res, next) => {
 
   try {
-    let validatedData = await bodyValidation.validate(req.body, {abortEarly: false}) // Aqui ele valida os campos
+    await bodyValidation.validate(req.body, { abortEarly: false }); // Aqui ele valida os campos
+    return next(); // se a validação passar será executado o outro handle do arquivo routes.index
   } catch (err) {
     const yupError = err as yup.ValidationError;
-    const errors: Record<string, string> = {}
+    const errors: Record<string, string> = {};
 
-    yupError.inner.forEach(error => {
-      if(error.path ===  undefined) return;
-      errors[error.path] = error.message
+    yupError.inner.forEach((error) => {
+      if (error.path === undefined) return;
+      errors[error.path] = error.message;
     });
 
-    return res.status(StatusCodes.BAD_REQUEST).json({errors})
+    return res.status(StatusCodes.BAD_REQUEST).json({ errors });
   }
-console.log(req.body);
 
-return res.json("Yes, Ohhhh Cadastrou !");
 }
+
+// export const create = async (req: Request<{}, {}, ICidade>, res: Response) => {
+  export const create: RequestHandler = async (req, res) => {
+  // const data = req.body;
+  // console.log("Dados da Requisição: ", data); 
+  // let validatedData: ICidade | undefined = undefined;
+  console.log(req.body);
+
+  return res.json('Yes, Ohhhh Cadastrou !');
+};
