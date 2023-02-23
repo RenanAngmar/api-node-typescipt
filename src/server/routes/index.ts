@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { StatusCodes } from 'http-status-codes' // lib externa para status
-import {CidadesController} from './../controllers'
+import { StatusCodes } from 'http-status-codes'; // lib externa para status
+import { CidadesController } from './../controllers';
 
 const router = Router();
 
@@ -27,7 +27,7 @@ router.post('/teste2/:id', (req, res) => {
   // Exemplo usando params
   // mostra o que o front enviou para o back utilizando params
   // valores que vem na url da chamada. Valores primitivos, string, boolean, number...
-  console.log('Dado: ', req.params.id); 
+  console.log('Dado: ', req.params.id);
   return res.json(req.params); // Aqui é a resposta para o front
 });
 
@@ -35,12 +35,19 @@ router.post('/teste3', (req, res) => {
   // Exemplo usando params
   // mostra o que o front enviou para o back utilizando params
   // valores que vem na url da chamada. Valores primitivos, string, boolean, number...
-  console.log('Dado: ', req.query); 
-  
+  console.log('Dado: ', req.query);
+
   return res.json(req.query); // Aqui é a resposta para o front
 });
 
-// Inicio do post de cidades
-router.post('/cidades',CidadesController.createBodyValidator, CidadesController.create)
-
+// Inicio das rotas de cidades
+router.post('/cidades', CidadesController.createBodyValidator, CidadesController.create);
+router.get('/cidadesAll', CidadesController.getAllQueryValidatorPagination, CidadesController.getAll);
+router.get('/cidadeById/:id', CidadesController.getByIdValidator, CidadesController.getById);
+router.delete('/cidadeDeleteById/:id', CidadesController.deleteParamsValidator, CidadesController.deleteById);
+router.put('/cidadeUpdateById/:id',
+  CidadesController.updateBodyValidator,
+  CidadesController.updateParamsValidator,
+  CidadesController.updateById,
+);
 export { router };
