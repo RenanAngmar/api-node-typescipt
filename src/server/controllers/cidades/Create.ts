@@ -46,5 +46,5 @@ export const createBodyValidator: RequestHandler = async (req, res, next) => {
   // let validatedData: ICidade | undefined = undefined;
   console.log(req.body);
 
-  return res.json('Yes, Ohhhh Cadastrou !');
+  return res.status(StatusCodes.CREATED).json('Yes, Ohhhh Cadastrou !');
 };

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.router = void 0;
 const express_1 = require("express");
 const http_status_codes_1 = require("http-status-codes"); // lib externa para status
+const controllers_1 = require("./../controllers");
 const router = (0, express_1.Router)();
 exports.router = router;
 router.get('/', (req, res) => {
@@ -34,3 +35,9 @@ router.post('/teste3', (req, res) => {
     console.log('Dado: ', req.query);
     return res.json(req.query); // Aqui é a resposta para o front
 });
+// Inicio das rotas de cidades
+router.post('/cidades', controllers_1.CidadesController.createBodyValidator, controllers_1.CidadesController.create);
+router.get('/cidadesAll', controllers_1.CidadesController.getAllQueryValidatorPagination, controllers_1.CidadesController.getAll);
+router.get('/cidadeById/:id', controllers_1.CidadesController.getByIdValidator, controllers_1.CidadesController.getById);
+router.delete('/cidadeDeleteById/:id', controllers_1.CidadesController.deleteParamsValidator, controllers_1.CidadesController.deleteById);
+router.put('/cidadeUpdateById/:id', controllers_1.CidadesController.updateBodyValidator, controllers_1.CidadesController.updateParamsValidator, controllers_1.CidadesController.updateById);

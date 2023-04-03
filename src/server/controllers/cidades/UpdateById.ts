@@ -64,6 +64,8 @@ export const updateParamsValidator: RequestHandler = async (req, res, next) => {
   // console.log("Dados da Requisição: ", data); 
   // let validatedData: ICidade | undefined = undefined;
   console.log(req.body);
+  console.log(req.params);
+  
 
   return res.json('Registro atualizado com sucesso');
 };
