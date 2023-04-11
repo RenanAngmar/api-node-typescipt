@@ -21,7 +21,6 @@ const bodyValidation: yup.Schema<ICidade> = yup.object().shape({
 
 // export const createBodyValidator = async (req: Request<{}, {}, ICidade>, res: Response) => {
 export const createBodyValidator: RequestHandler = async (req, res, next) => {
-
   try {
     await bodyValidation.validate(req.body, { abortEarly: false }); // Aqui ele valida os campos
     return next(); // se a validação passar será executado o outro handle do arquivo routes.index
