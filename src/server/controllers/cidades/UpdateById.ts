@@ -1,18 +1,19 @@
 import { Request, RequestHandler, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import * as yup from 'yup';
+import { ICidade } from '../../database/models';
 
 interface IParamsProps {
   id?: string;
 }
 
-interface IBodyProps {
-  nome: string;
-}
+interface IBodyProps extends Omit<ICidade, 'id'> {}
 
 // Schema para validação da entidade
 const bodyValidationUpdate: yup.Schema<IBodyProps> = yup.object().shape({
   nome: yup.string().required("Nome é obrigatório").min(3, ' Nome com mínimo de 3 caracteres'),
+  quantidade: yup.number().required('Campo Quantidade é obrigatória'),
+  ativa: yup.boolean().typeError('Campo deve ser do tipo boolean').required('Campo ativo é obrigatório'),
 });
 
 const paramsValidationUpdate: yup.Schema<IParamsProps> = yup.object().shape({

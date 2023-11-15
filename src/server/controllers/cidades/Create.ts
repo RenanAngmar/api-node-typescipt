@@ -1,23 +1,30 @@
 import { Request, RequestHandler, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import * as yup from 'yup';
+import { ICidade } from '../../database/models';
+import { CidadesProvider } from '../../database/providers/cidades';
 
-interface ICidade {
-  id?: string;
-  nome: string;
-  quantidade: number;
-  ativa: boolean;
-}
+// interface ICidade {
+//   id?: string;
+//   nome: string;
+//   quantidade: number;
+//   ativa: boolean;
+// }
+
+interface IBodyProps extends Omit<ICidade, 'id'> {}
 
 // Schema para validação da entidade
-const bodyValidation: yup.Schema<ICidade> = yup.object().shape({
-  id: yup.string(),
-  nome: yup.string().required().min(3, ' Nome com mínimo de 3 caracteres').required('Campo nome é obrigatório'),
+const bodyValidation: yup.Schema<IBodyProps> = yup.object().shape({
+  // id: yup.string(),
+  nome: yup
+    .string()
+    .required()
+    .min(3, ' Nome com mínimo de 3 caracteres')
+    .max(150, 'Máximo de 150 caracteres')
+    .required('Campo nome é obrigatório'),
   quantidade: yup.number().required('Campo Quantidade é obrigatória'),
   ativa: yup.boolean().typeError('Campo deve ser do tipo boolean').required('Campo ativo é obrigatório'),
 });
-
-
 
 // export const createBodyValidator = async (req: Request<{}, {}, ICidade>, res: Response) => {
 export const createBodyValidator: RequestHandler = async (req, res, next) => {
@@ -35,15 +42,24 @@ export const createBodyValidator: RequestHandler = async (req, res, next) => {
 
     return res.status(StatusCodes.BAD_REQUEST).json({ errors });
   }
-
-}
+};
 
 // export const create = async (req: Request<{}, {}, ICidade>, res: Response) => {
-  export const create: RequestHandler = async (req, res) => {
+export const create: RequestHandler = async (req, res) => {
   // const data = req.body;
-  // console.log("Dados da Requisição: ", data); 
+  // console.log("Dados da Requisição: ", data);
   // let validatedData: ICidade | undefined = undefined;
   console.log(req.body);
 
-  return res.status(StatusCodes.CREATED).json('Yes, Ohhhh Cadastrou !');
+  const result = await CidadesProvider.create(req.body);
+
+  if (result instanceof Error) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      errors: {
+        default: result.message,
+      },
+    });
+  }
+
+  return res.status(StatusCodes.CREATED).json(result);
 };
